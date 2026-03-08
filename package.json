@@ -1,0 +1,27 @@
+{
+  "name": "mbmb-onboarding",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "bugs": {
+    "url": "https://github.com/Pablodd1/MBMB-onboarding/issues"
+  },
+  "homepage": "https://github.com/Pablodd1/MBMB-onboarding#readme",
+  "dependencies": {
+    "framer-motion": "^12.35.1",
+    "lucide-react": "^0.577.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.71.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.4",
+    "vite": "^7.3.1"
+  }
+}

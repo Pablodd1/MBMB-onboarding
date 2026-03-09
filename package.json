@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "scripts": {
+"scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "chmod +x node_modules/.bin/vite"
   },
   "bugs": {
     "url": "https://github.com/Pablodd1/MBMB-onboarding/issues"

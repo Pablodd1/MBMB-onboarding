@@ -4,19 +4,22 @@ import {
   FileText, ShieldCheck, Briefcase, Landmark, User, 
   Mic, MicOff, CheckCircle2, AlertCircle, ChevronRight, 
   ChevronLeft, Plus, Trash2, Save, Download, FileSpreadsheet,
-  Archive, FileCheck
+  Archive, FileCheck, Globe
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import JSZip from 'jszip';
+import LanguageToggle from './LanguageToggle';
+import SavingsCalculator from './SavingsCalculator';
+import LeadMagnetPopup from './LeadMagnetPopup';
 import './App.css';
 
 const TABS = [
-  { id: 'business', label: 'Business & Legal', icon: FileText },
-  { id: 'license', label: 'Licenses & Compliance', icon: ShieldCheck },
-  { id: 'practice', label: 'Practice Details', icon: Briefcase },
-  { id: 'banking', label: 'Banking', icon: Landmark },
-  { id: 'providers', label: 'Providers', icon: User },
-  { id: 'finish', label: 'Review & Finish', icon: Archive },
+  { id: 'business', label: t.nav.business || 'Business & Legal', icon: FileText },
+  { id: 'license', label: t.nav.license || 'Licenses & Compliance', icon: ShieldCheck },
+  { id: 'practice', label: t.nav.practice || 'Practice Details', icon: Briefcase },
+  { id: 'banking', label: t.nav.banking || 'Banking', icon: Landmark },
+  { id: 'providers', label: t.nav.providers || 'Providers', icon: User },
+  { id: 'finish', label: t.nav.finish || 'Review & Finish', icon: Archive },
 ];
 
 function App() {
@@ -196,8 +199,7 @@ function App() {
 
 
   const downloadChecklist = () => {
-    const checklist = `
-MEDICAL BILLING MIAMI BEACH (MBMB) - ONBOARDING CHECKLIST
+    const checklist = t.leadMagnet.title + `
 ---------------------------------------------------------
 Please prepare the following documents to complete your enrollment:
 
@@ -226,287 +228,293 @@ Support: jasmel@medicalbillingmb.com | 786-643-2099
     const element = document.createElement("a");
     const file = new Blob([checklist], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
-    element.download = "MBMB_Required_Documents.txt";
+    element.download = t.leadMagnet.title.replace(/[^a-z0-9]/gi, '_') + ".txt";
     document.body.appendChild(element);
     element.click();
   };
 
-  const renderBusiness = () => (
-    <div className="section-form">
-      <h3>Business & Legal Documents</h3>
-      <div className="form-grid">
-        <div className="form-group">
-          <label>City & County Business Tax Receipts</label>
-          <input 
-            name="business.taxReceipts" 
-            value={formData.business.taxReceipts || ''} 
-            onChange={handleChange} 
-            onFocus={handleFocus}
-            placeholder="Document number or status..."
-          />
-        </div>
-        <div className="form-group">
-          <label>Certificate of Use Verification</label>
-          <input 
-            name="business.certUse" 
-            value={formData.business.certUse || ''} 
-            onChange={handleChange} 
-            onFocus={handleFocus}
-            placeholder="Verification ID..."
-          />
-        </div>
-        <div className="form-group">
-          <label>Practice EIN (Tax ID)</label>
-          <input 
-            name="business.ein" 
-            value={formData.business.ein || ''} 
-            onChange={handleChange} 
-            onFocus={handleFocus}
-            placeholder="XX-XXXXXXX"
-          />
-        </div>
-        <div className="form-group">
-          <label>Legal Business Name</label>
-          <input 
-            name="business.legalName" 
-            value={formData.business.legalName || ''} 
-            onChange={handleChange} 
-            onFocus={handleFocus}
-          />
-        </div>
-        <div className="form-group">
-          <label>Tax ID Document (IRS SS-4)</label>
-          <div className="file-input-wrapper">
-            <input type="file" onChange={(e) => handleFileUpload(e, 'business.taxIdDoc')} className="file-input" />
-            <div className="file-status">
-              {fileObjects['business.taxIdDoc'] ? (
-                <span className="success"><FileCheck size={14} /> {fileObjects['business.taxIdDoc'].name}</span>
-              ) : 'No file chosen'}
-            </div>
+const renderBusiness = () => (
+  <div className="section-form">
+    <h3>{t.forms.businessLegal}</h3>
+    <div className="form-grid">
+      <div className="form-group">
+        <label>{t.forms.cityTaxReceipts}</label>
+        <input 
+          name="business.taxReceipts" 
+          value={formData.business.taxReceipts || ''} 
+          onChange={handleChange} 
+          onFocus={handleFocus}
+          placeholder={t.placeholders.documentNumber}
+        />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.certUseVerif}</label>
+        <input 
+          name="business.certUse" 
+          value={formData.business.certUse || ''} 
+          onChange={handleChange} 
+          onFocus={handleFocus}
+          placeholder={t.placeholders.verificationId}
+        />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.practiceEin}</label>
+        <input 
+          name="business.ein" 
+          value={formData.business.ein || ''} 
+          onChange={handleChange} 
+          onFocus={handleFocus}
+          placeholder={t.placeholders.taxIdFormat}
+        />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.legalBusinessName}</label>
+        <input 
+          name="business.legalName" 
+          value={formData.business.legalName || ''} 
+          onChange={handleChange} 
+          onFocus={handleFocus}
+        />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.taxIdDocument}</label>
+        <div className="file-input-wrapper">
+          <input type="file" onChange={(e) => handleFileUpload(e, 'business.taxIdDoc')} className="file-input" />
+          <div className="file-status">
+            {fileObjects['business.taxIdDoc'] ? (
+              <span className="success"><FileCheck size={14} /> {fileObjects['business.taxIdDoc'].name}</span>
+            ) : t.nav.docChecklist || 'No file chosen'}
           </div>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 
-  const renderLicense = () => (
-    <div className="section-form">
-      <h3>Licenses & Compliance</h3>
-      <div className="form-grid">
-        <div className="form-group">
-          <label>AHCA License or Exemption</label>
-          <input name="license.ahca" value={formData.license.ahca || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>OSHA Compliance Setup</label>
-          <select name="license.osha" value={formData.license.osha || ''} onChange={handleChange}>
-            <option value="">Select status...</option>
-            <option value="complete">Complete</option>
-            <option value="in_progress">In Progress</option>
-            <option value="not_started">Not Started</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>HIPAA Compliance Audit</label>
-          <select name="license.hipaa" value={formData.license.hipaa || ''} onChange={handleChange}>
-            <option value="">Select status...</option>
-            <option value="complete">Verified</option>
-            <option value="pending">Pending Audit</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Biomedical Waste Permit</label>
-          <input name="license.wastePermit" value={formData.license.wastePermit || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>PECOS Enrollment</label>
-          <input name="license.pecos" value={formData.license.pecos || ''} onChange={handleChange} onFocus={handleFocus} placeholder="NPI/ID..." />
-        </div>
-        <div className="form-group">
-          <label>Medicare Enrollment</label>
-          <input name="license.medicare" value={formData.license.medicare || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Insurance Credentialing</label>
-          <input name="license.credentialing" value={formData.license.credentialing || ''} onChange={handleChange} onFocus={handleFocus} placeholder="Commercial plans..." />
-        </div>
-        <div className="form-group">
-          <label>CLIA Certification</label>
-          <input name="license.clia" value={formData.license.clia || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
+const renderLicense = () => (
+  <div className="section-form">
+    <h3>{t.forms.licensesCompliance}</h3>
+    <div className="form-grid">
+      <div className="form-group">
+        <label>{t.forms.ahcaLicense}</label>
+        <input name="license.ahca" value={formData.license.ahca || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.oshaCompliance}</label>
+        <select name="license.osha" value={formData.license.osha || ''} onChange={handleChange}>
+          <option value="">{t.placeholders.selectStatus}</option>
+          <option value="complete">Complete</option>
+          <option value="in_progress">In Progress</option>
+          <option value="not_started">Not Started</option>
+        </select>
+      </div>
+      <div className="form-group">
+        <label>{t.forms.hipaaAudit}</label>
+        <select name="license.hipaa" value={formData.license.hipaa || ''} onChange={handleChange}>
+          <option value="">{t.placeholders.selectStatus}</option>
+          <option value="complete">Verified</option>
+          <option value="pending">Pending Audit</option>
+        </select>
+      </div>
+      <div className="form-group">
+        <label>{t.forms.biomedicalWaste}</label>
+        <input name="license.wastePermit" value={formData.license.wastePermit || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.pecosEnrollment}</label>
+        <input name="license.pecos" value={formData.license.pecos || ''} onChange={handleChange} onFocus={handleFocus} placeholder={t.placeholders.npiId} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.medicareEnrollment}</label>
+        <input name="license.medicare" value={formData.license.medicare || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.insuranceCred}</label>
+        <input name="license.credentialing" value={formData.license.credentialing || ''} onChange={handleChange} onFocus={handleFocus} placeholder={t.placeholders.commercialPlans} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.cliaCert}</label>
+        <input name="license.clia" value={formData.license.clia || ''} onChange={handleChange} onFocus={handleFocus} />
       </div>
     </div>
-  );
+  </div>
+);
 
-  const renderPractice = () => (
-    <div className="section-form">
-      <h3>Practice Address & Ownership</h3>
-      <div className="form-grid full-width">
-        <div className="form-group">
-          <label>Practice Address</label>
-          <textarea name="practice.address" value={formData.practice.address || ''} onChange={handleChange} onFocus={handleFocus} rows="2" />
-        </div>
-      </div>
-      <div className="form-grid">
-        <div className="form-group">
-          <label>Phone Number</label>
-          <input name="practice.phone" value={formData.practice.phone || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Fax Number</label>
-          <input name="practice.fax" value={formData.practice.fax || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Ownership Details</label>
-          <input name="practice.ownership" value={formData.practice.ownership || ''} onChange={handleChange} onFocus={handleFocus} placeholder="Owner names/shareholders..." />
-        </div>
-        <div className="form-group">
-          <label>Group NPI</label>
-          <input name="practice.groupNpi" value={formData.practice.groupNpi || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Practice License #</label>
-          <input name="practice.license" value={formData.practice.license || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Malpractice / Liability Policy</label>
-          <input name="practice.malpractice" value={formData.practice.malpractice || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
+const renderPractice = () => (
+  <div className="section-form">
+    <h3>{t.forms.practiceAddress}</h3>
+    <div className="form-grid full-width">
+      <div className="form-group">
+        <label>{t.forms.practiceAddress}</label>
+        <textarea name="practice.address" value={formData.practice.address || ''} onChange={handleChange} onFocus={handleFocus} rows="2" />
       </div>
     </div>
-  );
-
-  const renderBanking = () => (
-    <div className="section-form">
-      <h3>Banking Information (EFT Enrollment)</h3>
-      <div className="form-grid">
-        <div className="form-group">
-          <label>Account Number</label>
-          <input name="banking.account" value={formData.banking.account || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Routing Number</label>
-          <input name="banking.routing" value={formData.banking.routing || ''} onChange={handleChange} onFocus={handleFocus} />
-        </div>
-        <div className="form-group">
-          <label>Account Type</label>
-          <select name="banking.type" value={formData.banking.type || ''} onChange={handleChange}>
-            <option value="">Select...</option>
-            <option value="checking">Checking</option>
-            <option value="savings">Savings</option>
-          </select>
-        </div>
+    <div className="form-grid">
+      <div className="form-group">
+        <label>{t.forms.phoneNumber}</label>
+        <input name="practice.phone" value={formData.practice.phone || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.faxNumber}</label>
+        <input name="practice.fax" value={formData.practice.fax || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.ownershipDetails}</label>
+        <input name="practice.ownership" value={formData.practice.ownership || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.groupNPI}</label>
+        <input name="practice.groupNpi" value={formData.practice.groupNpi || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.practiceLicense}</label>
+        <input name="practice.license" value={formData.practice.license || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.malpracticeLiability}</label>
+        <input name="practice.malpractice" value={formData.practice.malpractice || ''} onChange={handleChange} onFocus={handleFocus} />
       </div>
     </div>
-  );
+  </div>
+);
 
-  const renderProviders = () => (
-    <div className="section-form">
-      <div className="section-header">
-        <h3>Provider-Level Documents</h3>
-        <button className="btn-add" onClick={addProvider}>
-          <Plus size={18} /> Add Provider
-        </button>
+const renderBanking = () => (
+  <div className="section-form">
+    <h3>{t.forms.bankingInfo}</h3>
+    <div className="form-grid">
+      <div className="form-group">
+        <label>{t.forms.accountNumber}</label>
+        <input name="banking.account" value={formData.banking.account || ''} onChange={handleChange} onFocus={handleFocus} />
       </div>
-      
-      {formData.providers.map((provider, index) => (
-        <div key={provider.id} className="provider-card">
-          <div className="provider-header">
-            <h4>Clinician #{index + 1}</h4>
-            {formData.providers.length > 1 && (
-              <button className="btn-icon danger" onClick={() => removeProvider(provider.id)}>
-                <Trash2 size={18} />
-              </button>
-            )}
+      <div className="form-group">
+        <label>{t.forms.routingNumber}</label>
+        <input name="banking.routing" value={formData.banking.routing || ''} onChange={handleChange} onFocus={handleFocus} />
+      </div>
+      <div className="form-group">
+        <label>{t.forms.accountType}</label>
+        <select name="banking.type" value={formData.banking.type || ''} onChange={handleChange}>
+          <option value="">{t.placeholders.selectAccountType}</option>
+          <option value="checking">Checking</option>
+          <option value="savings">Savings</option>
+        </select>
+      </div>
+    </div>
+  </div>
+);
+
+const renderProviders = () => (
+  <div className="section-form">
+    <div className="section-header">
+      <h3>{t.forms.providerDocs}</h3>
+      <button className="btn-add" onClick={addProvider}>
+        <Plus size={18} /> {t.buttons.addProvider}
+      </button>
+    </div>
+    
+    {formData.providers.map((provider, index) => (
+      <div key={provider.id} className="provider-card">
+        <div className="provider-header">
+          <h4>{t.forms.providerNumber} #{index + 1}</h4>
+          {formData.providers.length > 1 && (
+            <button className="btn-icon danger" onClick={() => removeProvider(provider.id)}>
+              <Trash2 size={18} />
+            </button>
+          )}
+        </div>
+        <div className="form-grid">
+          <div className="form-group">
+            <label>{t.forms.providerNPI}</label>
+            <input name={`providers.${provider.id}.npi`} value={provider.npi || ''} onChange={handleChange} onFocus={handleFocus} />
           </div>
-          <div className="form-grid">
-            <div className="form-group">
-              <label>Provider NPI</label>
-              <input name={`providers.${provider.id}.npi`} value={provider.npi || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>TAX ID / SSN</label>
-              <input name={`providers.${provider.id}.taxid`} value={provider.taxid || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>CV / Resume</label>
-              <div className="file-input-wrapper">
-                <input type="file" onChange={(e) => handleFileUpload(e, `providers.${provider.id}.cv`)} className="file-input" />
-                <div className="file-status">
-                  {fileObjects[`providers.${provider.id}.cv`] ? (
-                    <span className="success"><FileCheck size={14} /> {fileObjects[`providers.${provider.id}.cv`].name}</span>
-                  ) : 'No file chosen'}
-                </div>
+          <div className="form-group">
+            <label>{t.forms.taxIdSsn}</label>
+            <input name={`providers.${provider.id}.taxid`} value={provider.taxid || ''} onChange={handleChange} onFocus={handleFocus} />
+          </div>
+          <div className="form-group">
+            <label>{t.forms.cvResume}</label>
+            <div className="file-input-wrapper">
+              <input type="file" onChange={(e) => handleFileUpload(e, `providers.${provider.id}.cv`)} className="file-input" />
+              <div className="file-status">
+                {fileObjects[`providers.${provider.id}.cv`] ? (
+                  <span className="success"><FileCheck size={14} /> {fileObjects[`providers.${provider.id}.cv`].name}</span>
+                ) : t.nav.docChecklist || 'No file chosen'}
               </div>
             </div>
-            <div className="form-group">
-              <label>Education Details (Degrees)</label>
-              <input name={`providers.${provider.id}.education`} value={provider.education || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>Active State License</label>
-              <input name={`providers.${provider.id}.license`} value={provider.license || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>DEA Registration</label>
-              <input name={`providers.${provider.id}.dea`} value={provider.dea || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>Board Certification</label>
-              <input name={`providers.${provider.id}.board`} value={provider.board || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>Malpractice Insurance</label>
-              <input name={`providers.${provider.id}.malpractice`} value={provider.malpractice || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
-            <div className="form-group">
-              <label>CAQH Login</label>
-              <input name={`providers.${provider.id}.caqh`} value={provider.caqh || ''} onChange={handleChange} onFocus={handleFocus} />
-            </div>
           </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderFinish = () => (
-    <div className="section-form finish-page">
-      <div className="finish-card">
-        <div className="finish-icon-large">
-          <Archive size={48} color="var(--accent)" />
-        </div>
-        <h3>Submit Your Onboarding Package</h3>
-        <p className="finish-desc">
-          Ready to wrap up? We've bundled your form data and all your uploaded documents into a single secure **.ZIP** file. 
-        </p>
-        
-        <div className="review-stats">
-          <div className="stat-item">
-            <span className="label">Documents Attached:</span>
-            <span className="value">{Object.keys(fileObjects).length} Files</span>
+          <div className="form-group">
+            <label>{t.forms.educationDetails}</label>
+            <input name={`providers.${provider.id}.education`} value={provider.education || ''} onChange={handleChange} onFocus={handleFocus} />
           </div>
-          <div className="stat-item">
-            <span className="label">Providers Listed:</span>
-            <span className="value">{formData.providers.length} Clinicians</span>
+          <div className="form-group">
+            <label>{t.forms.stateLicense}</label>
+            <input name={`providers.${provider.id}.license`} value={provider.license || ''} onChange={handleChange} onFocus={handleFocus} />
           </div>
-        </div>
-
-        <button className="btn-primary btn-large" onClick={handleExportPackage} style={{ margin: '32px auto', width: 'auto', padding: '16px 40px', fontSize: '1.1rem' }}>
-          <Download size={24} /> Download Final Package (.ZIP)
-        </button>
-        
-        <div className="next-steps-card">
-          <h4>Instructions to Finish:</h4>
-          <ul>
-            <li>Download the ZIP package using the button above.</li>
-            <li>Send an email to <strong>jasmel@medicalbillingmb.com</strong> or <strong>jasmelacosta@gmail.com</strong></li>
-            <li>For support, you can call or text <strong>786-643-2099</strong></li>
-            <li>Attach the ZIP file to your message.</li>
-          </ul>
+          <div className="form-group">
+            <label>{t.forms.deaRegistration}</label>
+            <input name={`providers.${provider.id}.dea`} value={provider.dea || ''} onChange={handleChange} onFocus={handleFocus} />
+          </div>
+          <div className="form-group">
+            <label>{t.forms.boardCertification}</label>
+            <input name={`providers.${provider.id}.board`} value={provider.board || ''} onChange={handleChange} onFocus={handleFocus} />
+          </div>
+          <div className="form-group">
+            <label>{t.forms.malpracticeInsurance}</label>
+            <input name={`providers.${provider.id}.malpractice`} value={provider.malpractice || ''} onChange={handleChange} onFocus={handleFocus} />
+          </div>
+          <div className="form-group">
+            <label>{t.forms.caqhLogin}</label>
+            <input name={`providers.${provider.id}.caqh`} value={provider.caqh || ''} onChange={handleChange} onFocus={handleFocus} />
+          </div>
         </div>
       </div>
+    ))}
+  </div>
+);
+
+const renderFinish = () => (
+  <div className="section-form finish-page">
+    <div className="finish-card">
+      <div className="finish-icon-large">
+        <Archive size={48} color="var(--accent)" />
+      </div>
+      <h3>{t.forms.submitPackage}</h3>
+      <p className="finish-desc">
+        Ready to wrap up? We've bundled your form data and all your uploaded documents into a single secure **.ZIP** file. 
+      </p>
+      
+      <div className="review-stats">
+        <div className="stat-item">
+          <span className="label">Documents Attached:</span>
+          <span className="value">{Object.keys(fileObjects).length} Files</span>
+        </div>
+        <div className="stat-item">
+          <span className="label">Providers Listed:</span>
+          <span className="value">{formData.providers.length} Clinicians</span>
+        </div>
+      </div>
+
+      <button className="btn-primary btn-large" onClick={handleExportPackage} style={{ margin: '32px auto', width: 'auto', padding: '16px 40px', fontSize: '1.1rem' }}>
+        <Download size={24} /> {t.buttons.exportPackage}
+      </button>
+      
+      {/* Live Savings Calculator */}
+      <div className="savings-calculator-section">
+        <h3>{t.savingsCalculator.title}</h3>
+        <SavingsCalculator t={t} />
+      </div>
+      
+      <div className="next-steps-card">
+        <h4>{t.messages.instructions}</h4>
+        <ul>
+          <li>{t.messages.instructionsList[0]}</li>
+          <li>{t.messages.instructionsList[1]}</li>
+          <li>{t.messages.instructionsList[2]}</li>
+          <li>{t.messages.instructionsList[3]}</li>
+        </ul>
+      </div>
     </div>
-  );
+  </div>
+);
 
   return (
     <div className="app-container">
@@ -541,7 +549,7 @@ Support: jasmel@medicalbillingmb.com | 786-643-2099
         
         <div className="voice-status">
           <div className={`status-dot ${isListening ? 'listening' : ''}`} />
-          <span>{isListening ? 'Voice Assistant Active' : 'Voice Assistant Off'}</span>
+          <span>{isListening ? t.voiceAssistant.listening : t.voiceAssistant.off}</span>
         </div>
       </nav>
 
@@ -554,14 +562,15 @@ Support: jasmel@medicalbillingmb.com | 786-643-2099
             <span className="current">{TABS.find(t => t.id === activeTab).label}</span>
           </div>
           
-          <div className="actions">
-            <button className="btn-secondary" onClick={downloadChecklist}>
-              <Download size={18} /> Doc Checklist
-            </button>
-            <button className="btn-primary" onClick={handleExportPackage}>
-              <Archive size={18} /> Export Package
-            </button>
-          </div>
+        <div className="actions">
+          <button className="btn-secondary" onClick={downloadChecklist}>
+            <Download size={18} /> {t.nav.docChecklist || 'Doc Checklist'}
+          </button>
+          <button className="btn-primary" onClick={handleExportPackage}>
+            <Archive size={18} /> {t.nav.exportPackage || 'Export Package'}
+          </button>
+          <LanguageToggle />
+        </div>
         </header>
 
         <div className="content-scroll">
@@ -597,12 +606,13 @@ Support: jasmel@medicalbillingmb.com | 786-643-2099
               animate={{ opacity: 1, y: 0 }}
               className="transcript-popover glass-morphism"
             >
-              <p className="pulse">Listening...</p>
-              <p className="current-text">{transcript || 'Speak to fill the selected field...'}</p>
+          <p className="pulse">{t.voiceAssistant.listeningText}</p>
+          <p className="current-text">{transcript || t.voiceAssistant.transcriptPlaceholder}</p>
             </motion.div>
           )}
         </div>
       </main>
+      <LeadMagnetPopup t={t} />
     </div>
   );
 }

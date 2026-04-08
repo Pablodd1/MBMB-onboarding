@@ -426,5 +426,303 @@
 }
 
 .next-steps-card li {
-  margin-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+/* Language Toggle Styles */
+.language-toggle {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.btn-language {
+    background: var(--glass);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-language:hover {
+    background: white;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Savings Calculator Styles */
+.savings-calculator-section {
+    margin: 32px 0;
+    padding: 24px;
+    background: #f0f9ff;
+    border-radius: 16px;
+    border: 1px solid #bae6fd;
+}
+
+.savings-calculator {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.calculator-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.calculator-card.results-card {
+    background: #ecfeff;
+    border: 1px solid #cffafe;
+}
+
+.calculator-subtitle {
+    color: #64748b;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.calculator-form .form-group {
+    margin-bottom: 16px;
+}
+
+.calculator-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #475569;
+}
+
+.calculator-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.calculator-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.help-text {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.info-box {
+    margin-top: 24px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.info-box p {
+    margin: 4px 0;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.results-content {
+    display: grid;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.result-item {
+    text-align: center;
+}
+
+.result-item h4 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.result-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+}
+
+.result-label {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .language-toggle {
+        top: 16px;
+        right: 16px;
+    }
+    
+    .savings-calculator-section {
+        margin: 24px 0;
+        padding: 20px;
+    }
+    
+    .calculator-card {
+        padding: 20px;
+    }
+}
+
+/* Lead Magnet Popup Styles */
+.lead-magnet-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.popup-content {
+    background: white;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.popup-header {
+    padding: 24px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1e40af;
+}
+
+.popup-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+    border-radius: 50%;
+}
+
+.popup-close:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.popup-body {
+    padding: 24px;
+}
+
+.popup-body p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+    color: #475569;
+}
+
+.popup-body p:last-child {
+    margin-bottom: 24px;
+}
+
+.email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.email-form input {
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.email-form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.email-form input::placeholder {
+    color: #94a3b8;
+}
+
+.privacy-note {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.lead-magnet-success {
+    text-align: center;
+    padding: 40px 24px;
+}
+
+.lead-magnet-success h3 {
+    color: #1e40af;
+    margin-bottom: 16px;
+}
+
+.lead-magnet-success p {
+    margin-bottom: 12px;
+    color: #475569;
+}
+
+.lead-magnet-success .success-message {
+    margin: 24px 0;
+    padding: 20px;
+    background: #f0f9ff;
+    border-radius: 12px;
+    border: 1px solid #bae6fd;
+}
+
+.lead-magnet-success .privacy-note {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 16px;
 }
